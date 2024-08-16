@@ -22,8 +22,11 @@ namespace ModuloDatos
 
                 try
                 {
-                    string Consulta = "select IdUsuario,DocumentoUsuario,NombreUsuario,Email,Password,Estado from Usuario";
-                    SqlCommand cmd = new SqlCommand(Consulta, OConexion);
+                    StringBuilder Consulta = new StringBuilder();
+                    Consulta.AppendLine("select u.Id_User, u.document,u.User_FullName,u.Gmail,u.Pssword,u.User_State,r.Role_Id,r.Rol_Desc from Usuario u");
+                    Consulta.AppendLine("inner join Rol r on r.Role_Id = u.Role_Id");
+                    //campos de la BD
+                    SqlCommand cmd = new SqlCommand(Consulta.ToString(), OConexion);
                     cmd.CommandType = CommandType.Text;
 
                     OConexion.Open();
@@ -41,6 +44,7 @@ namespace ModuloDatos
                                 Email = Lector["Email"].ToString(),
                                 Password = Lector["Password"].ToString(),
                                 Estado = Convert.ToBoolean(Lector["Estado"])
+                                ORol = new Rol() { IdRol = Convert.ToInt32(Lector["Role_Id"]),Descripcion = Lector["Rol_Desc"].ToString() }
 
 
                             });
