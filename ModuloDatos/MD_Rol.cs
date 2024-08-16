@@ -39,8 +39,8 @@ namespace ModuloDatos
 
                             Lista.Add(new Rol()
                             {
-                                IdRol = Convert.ToInt32(Lector["IdRol"]),
-                                Descripcion = Lector["Descripcion"].ToString(),
+                                IdRol = Convert.ToInt32(Lector["Rol_Id"]),
+                                Descripcion = Lector["Rol_Desc"].ToString(), //son los campos de la BD
 
                             });
 
