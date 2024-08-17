@@ -38,12 +38,12 @@ namespace ModuloDatos
 
                             Lista.Add(new Usuario()
                             {
-                                IdUsuario = Convert.ToInt32(Lector["IdUsuario"]),
-                                DocumentoUsuario = Lector["DocumentoUsuario"].ToString(),
-                                NombreUsuario = Lector["NombreUsuario"].ToString(),
-                                Email = Lector["Email"].ToString(),
-                                Password = Lector["Password"].ToString(),
-                                Estado = Convert.ToBoolean(Lector["Estado"])
+                                IdUsuario = Convert.ToInt32(Lector["Id_User"]),
+                                DocumentoUsuario = Lector["document"].ToString(),
+                                NombreUsuario = Lector["User_FullName"].ToString(),
+                                Email = Lector["Gmail"].ToString(),
+                                Password = Lector["Pssword"].ToString(),
+                                Estado = Convert.ToBoolean(Lector["User_State"])
                                 ORol = new Rol() { IdRol = Convert.ToInt32(Lector["Role_Id"]),Descripcion = Lector["Rol_Desc"].ToString() }
 
 
