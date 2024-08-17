@@ -45,8 +45,8 @@ namespace ModuloDatos
 
                             Lista.Add(new Permiso()
                             {
-                                ORol = new Rol(){ IdRol = Convert.ToInt32(Lector["IdRol"]) },
-                                NombreMenu = Lector["NombreMenu"].ToString(),
+                                ORol = new Rol(){ IdRol = Convert.ToInt32(Lector["Rol_Id"]) },
+                                NombreMenu = Lector["Menu_Name"].ToString(),
 
                             });
 
