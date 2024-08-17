@@ -61,7 +61,128 @@ namespace ModuloDatos
             }
 
             return Lista;
+        }
+        
+    public int Registrar(Usuario obj, out string Mensaje) {
+        int IdUsuarioGenerado =0 ;
+        Mensaje = string.Empty;
+
+        try
+        {
+            using (SqlConnection OConexion = new SqlConnection(Conexion.Cadena)){
+
+                SqlCommand cmd = new SqlCommand("SP_REGISTRARUSUARIO", OConexion);
+                cmd.Parameters.AddWithValue("Document", obj.DocumentoUsuario);
+                cmd.Parameters.AddWithValue("User_FullName", obj.NombreUsuario);
+                cmd.Parameters.AddWithValue("Gmail", obj.Email);
+                cmd.Parameters.AddWithValue("Pssword", obj.Password);
+                cmd.Parameters.AddWithValue("Role_Id", obj.ORol.IdRol);
+                cmd.Parameters.AddWithValue("User_State", obj.Estado);
+                cmd.Parameters.Add("IdUsusarioResultado",SqlDbType.Int).Direction = ParameterDirection.Output;
+                cmd.Parameters.Add("Mensaje", SqlDbType.VarChar,500).Direction = ParameterDirection.Output;
+                cmd.CommandType = CommandType.StoredProcedure;
+
+            OConexion.Open();
+
+            cmd.ExecuteNonQuery();
+
+            IdUsuarioGenerado = Convert.ToInt32(cmd.Parameters["IdUsusarioResultado"].Value);
+            Mensaje = cmd.Parameters["Mensaje"].Value.ToString();
 
         }
+
+    }
+    catch (Exception excepcion) {
+        IdUsuarioGenerado = 0;
+        Mensaje = excepcion.Message;
+        
+
+
+    }
+
+    return IdUsuarioGenerado;
+}
+
+public bool Editar(Usuario obj, out string Mensaje)
+{
+    bool Respuesta = false;
+    Mensaje = string.Empty;
+
+    try
+    {
+        using (SqlConnection OConexion = new SqlConnection(Conexion.Cadena))
+        {
+
+            SqlCommand cmd = new SqlCommand("SP_EDITARUSUARIO", OConexion);
+            cmd.Parameters.AddWithValue("Id_User", obj.IdUsuario);
+            cmd.Parameters.AddWithValue("Document", obj.DocumentoUsuario);
+            cmd.Parameters.AddWithValue("User_FullName", obj.NombreUsuario); // Son los campos del procedimiento almacenado
+            cmd.Parameters.AddWithValue("Gmail", obj.Email);
+            cmd.Parameters.AddWithValue("Pssword", obj.Password);
+            cmd.Parameters.AddWithValue("Role_Id", obj.ORol.IdRol);
+            cmd.Parameters.AddWithValue("User_State", obj.Estado);
+            cmd.Parameters.Add("Respuesta", SqlDbType.Int).Direction = ParameterDirection.Output;
+            cmd.Parameters.Add("Mensaje", SqlDbType.VarChar,500).Direction = ParameterDirection.Output;
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            OConexion.Open();
+
+            cmd.ExecuteNonQuery();
+
+            Respuesta = Convert.ToBoolean(cmd.Parameters["Respuesta"].Value);
+            Mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+        }
+
+    }
+    catch (Exception excepcion)
+    {
+        Respuesta = false;
+        Mensaje = excepcion.Message;
+
+
+
+    }
+
+    return Respuesta;
+}
+
+public bool Eliminar(Usuario obj, out string Mensaje)
+{
+    bool Respuesta = false;
+    Mensaje = string.Empty;
+
+    try
+    {
+        using (SqlConnection OConexion = new SqlConnection(Conexion.Cadena))
+        {
+
+            SqlCommand cmd = new SqlCommand("SP_ELIMINARUSUARIO", OConexion);
+            cmd.Parameters.AddWithValue("Id_User", obj.IdUsuario);
+            cmd.Parameters.Add("Respuesta", SqlDbType.Int).Direction = ParameterDirection.Output;
+            cmd.Parameters.Add("Mensaje", SqlDbType.VarChar,500).Direction = ParameterDirection.Output;
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            OConexion.Open();
+
+            cmd.ExecuteNonQuery();
+
+            Respuesta = Convert.ToBoolean(cmd.Parameters["Respuesta"].Value);
+            Mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+        }
+
+    }
+    catch (Exception excepcion)
+    {
+        Respuesta = false;
+        Mensaje = excepcion.Message;
+
+    }
+
+    return Respuesta;
+}
+
+        
     }
 }
