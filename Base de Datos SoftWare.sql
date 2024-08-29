@@ -1,15 +1,16 @@
-create database Phone_Store
+create database Phone_Store;
+GO
 
-use Phone_Store
-
-
+use Phone_Store;
+GO
 
 
 create table Rol(
 Role_Id int identity(1,1) primary key not null,
 Rol_Desc nvarchar(50) not null,
 Creation_Date date default getdate()
-)
+);
+GO
 
 
 create table Permiso(
@@ -17,7 +18,8 @@ Perm_Id int identity(1,1) primary key not null,
 Rol_Id int foreign key references Rol(Role_Id) not null,
 Menu_Name nvarchar(50),
 Creation_Date date default getdate()
-)
+);
+GO
 
 
 create table Proveedores(
@@ -29,7 +31,8 @@ Telephone char(8) check(Telephone like '[2|5|7|8][0-9][0-9][0-9][0-9][0-9][0-9][
 Prov_Address nvarchar(120),
 Prov_State bit default 1 not null,
 Creation_Date date default getdate()
-)
+);
+GO
 
 
 create table Cliente(
@@ -40,7 +43,8 @@ Gmail nvarchar(60) not null,
 Telephone char(8) check(Telephone like '[2|5|7|8][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') not null,
 Client_State bit default 1 not null,
 Creation_Date date default getdate()
-)
+);
+GO
 
 
 create table Usuario(
@@ -52,7 +56,8 @@ Pssword nvarchar(50) not null,
 Role_Id int foreign key references Rol(Role_Id) not null,
 User_State bit default 1 not null,
 Creation_State date default getdate()
-)
+);
+GO
 
 
 create table Marca(
@@ -60,7 +65,8 @@ Id_Marca int identity(1,1) primary key not null,
 Marca_Description nvarchar(50) not null,
 Marca_State bit default 1 not null,
 Creation_Date date default getdate()
-)
+);
+GO
 
 
 
@@ -75,13 +81,15 @@ Purchase_Price decimal(10,2) default 0,
 Sale_Price decimal(10,2) default 0,
 Prod_State bit default 1,
 Reg_Date date default getdate()
-)
+);
+GO
 
 
 create table Doc_Type(
 Doc_Type_Id int identity(1,1) primary key not null,
 Doc_Type_Description nvarchar(50) not null
-)
+);
+GO
 
 
 create table Compra(
@@ -92,7 +100,8 @@ Doc_Num int not null,
 Doc_Type int foreign key references Doc_Type(Doc_Type_Id) not null,
 Total money not null,
 Reg_Date date default getdate()
-)
+);
+GO
 
 
 create table Det_Compra(
@@ -104,7 +113,8 @@ Sale_Price money not null,
 Stock int not null,
 Total money not null,
 Reg_Date date
-)
+);
+GO
 
 
 create table Venta(
@@ -118,24 +128,38 @@ Pay_Amount money not null,
 Change_Amount money not null,
 Total_Amount money not null,
 Reg_Date date default getdate()
-)
+);
+GO
 
 
 create table Det_Venta(
 Det_Sale_Id int identity(1,1) primary key not null,
 Sale_Id int foreign key references Venta(Sale_Id) not null,
 Prod_Id int foreign key references Producto(Prod_Id) not null,
-Sale_Price money not null,
+Sale_Price decimal(10,2) not null,
 Quantity int not null,
-SubTotal money not null,
+SubTotal decimal(10,2) not null,
 Creation_Date date default getdate()
+);
+GO
+
+
+----NUEVA TABLA------
+
+Create table Negocio(
+Id_Negocio int primary key not null,
+Nombre Nvarchar (60) not null,
+RUC nvarchar(60) not null,
+Direccion nvarchar(60) not null,
+Logo varbinary(max) NULL
 )
 
+select Id_Negocio, Nombre, RUC, Direccion from Negocio where Id_Negocio = 1
+
 
 insert into Rol(Rol_Desc)
-values ('ADMIN')
-insert into Rol(Rol_Desc)
-values ('Empleado')
+values ('ADMIN'),('Empleado');
+GO
 
 
 
@@ -143,11 +167,9 @@ values ('Empleado')
 
 
 insert into Usuario(Document, User_FullName, Gmail, Pssword, Role_Id, User_State)
-values ('101010', 'ADMIN-nombre', 'CR7@gmail.com', '123', 1,1);
-
-insert into Usuario(Document, User_FullName, Gmail, Pssword, Role_Id, User_State)
-values ('202020', 'Empleado-nombre', 'MESSI@gmail.com', '456', 2,1);
-
+values ('101010', 'ADMIN-nombre', 'CR7@gmail.com', '123', 1,1),
+('202020', 'Empleado-nombre', 'MESSI@gmail.com', '456', 2,1);
+GO
 
 
 insert into Permiso(Rol_Id, Menu_Name) values 
@@ -156,14 +178,16 @@ insert into Permiso(Rol_Id, Menu_Name) values
 (1, 'menuVentas'),
 (1, 'menuCompras'),
 (1, 'menuClientes'),
-(1, 'menuProveedores')
+(1, 'menuProveedores');
+GO
 
 
 insert into Permiso(Rol_Id, Menu_Name) values 
 (2, 'menuVentas'),
 (2, 'menuCompras'),
 (2, 'menuClientes'),
-(2, 'menuProveedores')
+(2, 'menuProveedores');
+GO
 
 --select * from Rol
 --select * from Permiso
@@ -197,7 +221,8 @@ begin
    end
    else
     set @Mensaje='No se Puede Repetir el documento para mas de un usuario'
-end
+end;
+GO
 
 
 -- --
@@ -232,7 +257,8 @@ begin
   end
   else
     set @Mensaje='No se Puede Repetir El Documento para mas de un Usuario'
-end
+end;
+GO
 
 
 -- --
@@ -272,7 +298,8 @@ begin
     delete from Usuario WHERE Id_User = @Id_User  ---  <--Le agrege un where no se
 	set @IdUsuarioResultado=1
   end
-end
+end;
+GO
 
 
 
@@ -282,10 +309,10 @@ end
 -- Desde aqui los procedimientos relacionados a Marca ------
 
 insert into Marca(Marca_Description, Marca_State) values('Samsung', 1)
-insert into Marca(Marca_Description, Marca_State) values('Xiaomi', 1)
-insert into Marca(Marca_Description, Marca_State) values('OnePLus', 1)
+,('Xiaomi', 1)
+,('OnePLus', 1);
+GO
 
-select * from Marca
 
 
 create procedure SP_RegistrarMarca(
@@ -304,7 +331,8 @@ begin
    end
    else
      set @Mensaje='No Se Puede Repetir la descripcion de una Marca'
-end
+end;
+GO
 
 
 
@@ -327,7 +355,8 @@ begin
   else
      set @Resultado=0
 	 set @Mensaje='No se Puede Repetir la Descripcion de una Marca'
-end
+end;
+GO
 
 
 create procedure sp_EliminarMarca(
@@ -348,7 +377,8 @@ begin
     set @Resultado=0
 	set @Mensaje='La Marca se encuentra relacionada a un producto'
   end
-end
+end;
+GO
 
 
 
@@ -357,9 +387,9 @@ end
 -- Desde aqui los procedimientos relacionados a Producto ------
 
 insert into Producto(Prod_Cod, Prod_Name, Prod_Description, Id_Marca)
-values ('989', 'S24 Ultra', 'SP-885gen2/12-ram/512gb', 1)
+values ('989', 'S24 Ultra', 'SP-885gen2/12-ram/512gb', 1);
+GO
 
-select * from Producto
 
 
 create procedure sp_RegistrarProducto(
@@ -381,7 +411,8 @@ begin
 	end
 	else
 	  set @Mensaje='Ya Existe un producto con el mismo Codigo'
-end
+end;
+GO
 
 
 
@@ -414,7 +445,8 @@ begin
 	  set @Resultado=0
 	  set @Mensaje='Ya Existe un producto con el mismo codigo'
 	end
-end
+end;
+GO
 
 
 
@@ -451,7 +483,8 @@ begin
      delete from Producto where Prod_Id=@Prod_Id
 	 set @Respuesta=1
    end
-end
+end;
+GO
 
 
 --select * from Producto
@@ -463,7 +496,7 @@ end
 
 -- Desde aqui los procedimientos relacionados a Cliente ------
 
-select * from Cliente
+
 
 create procedure sp_RegistrarCliente(
 @Document nvarchar(50),
@@ -487,7 +520,8 @@ begin
 	end
 	else
 	  set @Mensaje='El Numero de Documento ya Existe'
-end
+end;
+GO
 
 
 
@@ -520,9 +554,16 @@ begin
     set @Resultado=0
 	set @Mensaje='El Numero de Documento Ya Existe'
   end
-end
+end;
+GO
 
-------Proc Proveedor -------------------------------------------------------
+
+
+
+
+
+
+-- Desde aqui los procedimientos relacionados a Proveedores ------
 
 create procedure sp_RegistrarProveedor(
 @Documen nvarchar(50),
@@ -546,7 +587,8 @@ begin
 	end
 	else
 	  set @Mensaje='El Numero de Documento ya Existe'
-end
+end;
+GO
 
 
 
@@ -579,7 +621,8 @@ begin
     set @Resultado=0
 	set @Mensaje='El Numero de Documento Ya Existe'
   end
-end
+end;
+GO
 
 create procedure sp_EliminarProveedor(
 @Prov_Id int,
@@ -599,7 +642,6 @@ begin
     set @Resultado=0
 	set @Mensaje='El Proveedor se encuentra relacionado a una Compra'
   end
-end
-
-
+end;
+GO
 
