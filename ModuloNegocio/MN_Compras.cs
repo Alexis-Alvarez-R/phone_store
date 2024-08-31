@@ -23,5 +23,19 @@ namespace ModuloNegocio
             return Objed_Compras.Registrar(obj,DetalleCompra, out Mensaje);
         }
 
+        public Compra ObtenerCompra(string numero)
+        {
+            Compra OCompra = Objed_Compras.ObtenerCompra(numero);
+
+            if (OCompra.IdCompra != 0)
+            {
+                List<DetalleCompra> ODetalleCompra = Objed_Compras.ObtenerDetalleCompra(OCompra.IdCompra);
+
+                OCompra.ODetalleCompra = ODetalleCompra;
+            }
+
+            return OCompra; 
+        }
+
     }
 }
