@@ -37,9 +37,9 @@ namespace ModuloDatos
                     IdCorrelativo = 0;
                 }
 
-
-                return IdCorrelativo;
             }
+
+            return IdCorrelativo;
         }
 
         public bool Registrar(Compra obj, DataTable DetalleCompra, out string Mensaje)
