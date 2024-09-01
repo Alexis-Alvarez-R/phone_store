@@ -113,13 +113,13 @@ GO
 create table Venta(
 Sale_Id int identity(1,1) primary key not null,
 Id_User int foreign key references Usuario(Id_User) not null,
-Doc_Num int not null,
-Doc_Type int foreign key references Doc_Type(Doc_Type_Id) not null,
+Doc_Type nvarchar(50) not null,
+Doc_Num nvarchar(50) not null,
 Client_Doc nvarchar(50) not null,
 Client_Name nvarchar(50) not null,
-Pay_Amount money not null,
-Change_Amount money not null,
-Total_Amount money not null,
+Pay_Amount decimal(18,2) not null,
+Change_Amount decimal(18,2)  not null,
+Total_Amount decimal(18,2)  not null,
 Reg_Date date default getdate()
 );
 GO
@@ -133,8 +133,7 @@ Sale_Price decimal(10,2) not null,
 Quantity int not null,
 SubTotal decimal(10,2) not null,
 Creation_Date date default getdate()
-);
-GO
+);GO
 
 
 ----NUEVA TABLA------
@@ -687,6 +686,62 @@ begin
 			from Producto p inner join @DetalleCompra dc on dc.Prod_Id = p.Prod_Id
 
 			commit transaction registro
+	end try
+	begin catch
+		
+		set @Resultado = 0
+		set @Mensaje = ERROR_MESSAGE()
+
+		rollback transaction registro
+
+	end catch
+end
+
+
+----Desde Aqui Los Proc de Ventas------
+
+create type [dbo].[Det_Venta] as table(
+	[Prod_Id] int null,
+	[Sale_Price] Decimal(18,2) null,
+	[Quantity] int null,
+	[SubTotal] Decimal(18,2) null
+);
+
+
+create procedure sp_RegistrarVenta(
+@Id_User int,
+@Doc_Type nvarchar(50),
+@Doc_Num nvarchar(50),
+@Client_Doc nvarchar(50),
+@Client_Name nvarchar(50),
+@Pay_Amount decimal(18,2),
+@Change_Amount decimal(18,2),
+@Total_Amount decimal(18,2),
+@DetalleVenta [Det_Venta] READONLY,
+@Resultado bit output,
+@Mensaje nvarchar(500)
+)
+as
+begin
+
+	begin try
+			declare @Sale_Id int = 0
+			set @Resultado = 1
+			set @Mensaje = ''
+
+			begin transaction registro
+			--registro Venta
+			insert into Venta(Id_User, Doc_Type, Doc_Num, Client_Doc, Client_Name, Pay_Amount, Change_Amount, Total_Amount)
+			values(@Id_User, @Doc_Type, @Doc_Num, @Client_Doc, @Client_Name, @Pay_Amount, @Change_Amount, @Total_Amount)
+
+			set @Sale_Id = SCOPE_IDENTITY()
+			
+			--registro Det_Venta
+			insert into Det_Venta(Sale_Id, Prod_Id, Sale_Price, Quantity, SubTotal)
+			select @Sale_Id, Prod_Id, Sale_Price, Quantity, SubTotal from @DetalleVenta
+
+			commit transaction registro
+
 	end try
 	begin catch
 		
